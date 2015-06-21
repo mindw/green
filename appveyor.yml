@@ -4,14 +4,26 @@ environment:
     matrix:
         - PYTHON: "C:/Python27"
         - PYTHON: "C:/Python34"
+
 init:
-    - "ECHO %PYTHON%"
-    - ps: "ls C:/Python*"
+    - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+
+    - ECHO "Updating Environment"
+    - python -m pip install -U setuptools
+    - python -m pip install -U pip
+    - python -m pip install -U wheel
+    
 install:
-      - ps: (new-object net.webclient).DownloadFile('https://raw.github.com/pypa/pip/master/contrib/get-pip.py', 'C:/get-pip.py')
-      - "%PYTHON%/python.exe C:/get-pip.py"
-      - "%PYTHON%/Scripts/pip.exe install -r requirements.txt"
+    - python -m pip install .
+    - python -m pip install -r requirements-optional.txt
+
+    # Check that we have the expected version and architecture for Python
+    - python -c "import sys, os;sys.stdout.write(str(sys.version) + os.linesep)"
+    - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
+    - python -m pip list
+      
 test_script:
-      - "%PYTHON%/python.exe -m green.cmdline -vvv green"
+    - "%PYTHON%/Scripts/green.exe -vvv green"
+
 platform:
     - AnyCPU
