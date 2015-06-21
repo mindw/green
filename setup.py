@@ -13,6 +13,11 @@ dependencies = [
     'colorama',
     'python-termstyle',
 ]
+
+extras_require = {
+    'optional': ['django', 'coverage', 'testtools' ],
+}
+
 if sys.version_info[0] == 2:
     dependencies.append('mock')
 
@@ -27,9 +32,10 @@ setup(
         'console_scripts' : [
             'green = green:main',
             'green%d = green:main' % sys.version_info[:1],    # green2 or green3
-            'green%d.%d = green:main' % sys.version_info[:2], # green3.4 etc.
             ],
     },
+    extras_require=extras_require,
+    tests_require=['coverage', 'testtools'],
     test_suite='green.test',
     description = 'Green is a clean, colorful test runner for Python unit tests.',
     long_description = long_description,
